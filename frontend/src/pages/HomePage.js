@@ -55,24 +55,9 @@ function HomePage() {
 
   return (
     <div>
-      <Header loginControl={isLoggedIn}/>
-      {/* Search Bar */}
-      <div className="justify-center w-1/3 container mx-auto mt-20 mb-4 pr-24 ">
-        <div className="relative flex items-center justify-end">
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md pl-10" // Add left padding for the search icon
-          />
-          <div className="absolute inset-y-0 right-0 flex items-center mr-3">
-            <img src='/search.png' alt="Search" className="w-5 h-5" /> {/* Use the search icon PNG */}
-          </div>
-        </div>
-      </div>
+      <Header />
 
-      <div className="container mx-auto mt-20 flex">
+      <div className="container mx-auto mt-44 flex">
         {/* Category section */}
         <div className="w-1/5 bg-gray-200 h-page flex flex-col justify-between mr-5 rounded-xl">
           <div>
@@ -109,4 +94,3 @@ function HomePage() {
 }
 
 export default HomePage;
-
