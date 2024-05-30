@@ -24,12 +24,17 @@ function RegisterPage() {
       // Handle successful registration
       if (response.status === 201) {
         localStorage.setItem('authToken', response.data.token); // Store authentication token
-        navigate('/'); // Redirect to home page after successful registration
+        alert("The registration process is successfull.");
+        navigate('/login'); // Redirect to login page after successful registration
       }
     } catch (err) {
-      setError('Registration failed');
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('Registration failed');
     }
-  };
+  }
+};
 
   return (
     <div>

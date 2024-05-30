@@ -33,14 +33,14 @@ const Header = ({}) => {
     <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed top-0 left-0 w-full z-20">
       <div className="max-w-full flex flex-wrap items-center justify-between mx-auto p-4">
         <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" className="h-8" alt="Flowbite Logo" />
+          <img src="https://www.svgrepo.com/show/445600/cash-payment.svg" className="h-8" alt="can-pare Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">can-pare</span>
         </Link>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative">
         <div>
-          <button type='button' className='bg-blue text-white font-bold py-2 px-2 mr-3 rounded-lg' >
-            kaydedilmiş ürünler
-          </button>
+        <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+          <img src="https://www.svgrepo.com/show/309930/save.svg" className="h-8" alt="save" /> Kaydedilmiş Ürünler
+        </Link>
         </div>
           {isLoggedIn && (
             <div>
