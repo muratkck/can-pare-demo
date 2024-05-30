@@ -15,7 +15,8 @@ function LoginPage() {
     try {
       const response = await axios.post('http://localhost:5000/api/users/login', { email, password });
       // Handle successful login
-      console.log(response.data.token);
+      localStorage.setItem('userEmail', email);
+      console.log(response.data);
       localStorage.setItem('authToken', response.data.token); // Store authentication token
       setIsLoggedIn(true); // Update state to reflect successful login
       navigate('/');
@@ -26,6 +27,7 @@ function LoginPage() {
 
   if (isLoggedIn) {
     // Redirect to main page if user is logged in
+
     navigate('/');
   }
 

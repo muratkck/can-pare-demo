@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import React, { useEffect, useState, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Header = ({}) => {
+const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const location = useLocation();
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const dropdownButtonRef = useRef(null);
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('userEmail');
     setIsLoggedIn(false);
     navigate('/login');
   };
@@ -26,10 +29,15 @@ const Header = ({}) => {
     const token = localStorage.getItem('authToken');
     if (token) {
       setIsLoggedIn(true);
+      const userEmail = localStorage.getItem('userEmail');
+      axios.get(`http://localhost:5000/api/users/${userEmail}`)
+        .then(response => setUser(response.data))
+        .catch(err => console.log(err));
     } else {
       setIsLoggedIn(false);
     }
   }, []);
+  console.log(user)
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed top-0 left-0 w-full z-20 shadow-lg">
@@ -40,7 +48,6 @@ const Header = ({}) => {
         </Link>
         {isLoggedIn && (
           <div className="flex items-center w-full justify-center">
-            {/* Search Bar */}
             <div className="relative flex items-center justify-center w-1/3">
               <input
                 type="text"
@@ -56,18 +63,43 @@ const Header = ({}) => {
           </div>
         )}
 
-
-
         {isLoggedIn && (
           <div className="flex items-center space-x-3 md:space-x-0 rtl:space-x-reverse relative">
-            {/* Saved Button */}
             <button onClick={handleFavorites} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left">
               <img className="w-8 h-8 rounded-full" src="https://www.svgrepo.com/show/309930/save.svg" alt="user photo" />
             </button>
-            {/* Logout Button */}
-            <button onClick={handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left">
-              <img className="w-8 h-8 rounded-full" src="https://www.svgrepo.com/show/506561/sign-out.svg" alt="user photo" />
+            <button
+              ref={dropdownButtonRef}
+              onClick={toggleDropdown}
+              type="button"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left"
+              id="user-menu-button"
+              aria-expanded={dropdownOpen}
+              aria-haspopup="true"
+            >
+              <span className="sr-only">Open user menu</span>
+              <img className="w-8 h-8 rounded-full" src="profile-circle-svgrepo-com.svg" alt="user photo" />
             </button>
+            {dropdownOpen && (
+              <div
+                className="absolute right-0 mt-4 w-48 z-50 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+                id="user-dropdown"
+                style={{
+                  top: dropdownButtonRef.current ? dropdownButtonRef.current.getBoundingClientRect().bottom : 'auto',
+                }}
+              >
+                <div className="px-4 py-3">
+                  <span className="block text-sm text-gray-900 dark:text-white">{user.name } {user.surname}</span>
+                  <span className="block text-sm text-gray-500 truncate dark:text-gray-400">{user.email}</span>
+                </div>
+                <ul className="py-2" aria-labelledby="user-menu-button">
+
+                  <li>
+                    <button onClick={handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left">Sign out</button>
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
         )}
       </div>

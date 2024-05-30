@@ -47,4 +47,31 @@ const authUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, authUser };
+const getUsers = async (req, res) => {
+  User.find()
+    .then(users => res.json(users))
+    .catch(err => res.status(400).json('Error: ' + err));
+};
+
+// Updated function to get a specific user by email
+const getUser = async (req, res) => {
+  const { email } = req.params; // Assuming email is passed as a URL parameter
+  try {
+    const user = await User.findOne({ email });
+
+    if (user) {
+      res.json({
+        _id: user._id,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+      });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: 'Server error: ' + err.message });
+  }
+};
+
+module.exports = { registerUser, authUser, getUser, getUsers };
