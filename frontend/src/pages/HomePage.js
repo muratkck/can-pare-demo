@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import Card from '../components/Card';
 import axios from 'axios';
 
@@ -38,7 +39,7 @@ function HomePage() {
     <div>
       <Header handleSearch={handleSearch} />
 
-      <div className="container mx-auto mt-44 flex items-center justify-center">
+      <div className="container mx-auto mt-44 flex items-center justify-center" style={{ minHeight: '100vh'}}>
         <div className="w-full md:w-2/3 shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {products.map((product, index) => (
@@ -49,6 +50,7 @@ function HomePage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

@@ -75,5 +75,63 @@ const getUser = async (req, res) => {
   }
 };
 
+const addFavoriteProduct = async (req, res) => {
+  const userId = req.user._id;
+  const { productId } = req.body;
 
-module.exports = { registerUser, authUser, getUser, getUsers };
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, {
+      $addToSet: { favorites: productId }
+    }, { new: true });
+
+    res.json({
+      message: 'Product added to favorites successfully',
+      favorites: updatedUser.favorites
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating favorites: ' + error.message });
+  }
+};
+
+const getFavorites = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId).populate('favorites');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user.favorites);
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving favorites: ' + error.message });
+  }
+};
+
+const protect = async (req, res, next) => {
+  let token;
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      req.user = await User.findById(decoded.id).select('-password');
+      next();
+    } catch (error) {
+      res.status(401).json({ message: 'Not authorized, token failed' });
+    }
+  }
+
+  if (!token) {
+    res.status(401).json({ message: 'Not authorized, no token' });
+  }
+};
+
+
+
+module.exports = { registerUser, authUser, getUser, getUsers, addFavoriteProduct, getFavorites, protect };

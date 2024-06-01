@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Header from '../components/Header'; // Header component import
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
@@ -19,7 +20,7 @@ const Favorites = () => {
   return (
     <div>
       <Header />
-      <div className="pt-16">
+      <div className="pt-16" style={{ minHeight: '100vh'}}>
         <div className="bg-gray-800 text-white p-4 shadow">
           <div className="container mx-auto">
             <h2 className="text-2xl font-bold">Your Favorite Products</h2>
@@ -39,6 +40,7 @@ const Favorites = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

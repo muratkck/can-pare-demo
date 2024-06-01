@@ -32,21 +32,31 @@ const fetchGoogleShoppingData = async (query) => {
 
   try {
     const response = await axios(config);
-    const products = response.data.shopping.slice(0, 8); // Take only the first 8 products
+    const products = response.data.shopping.slice(0, 8);
+  
     return products.map(product => {
-      // Extract the numeric part of the price and convert it to a float
+
       const priceFloat = parseFloat(product.price.replace(/[^0-9,.-]/g, '').replace(',', '.'));
+  
+      const stockStatus = product.inStock ? "In Stock" : "Out of Stock";
+      const category = product.category || "Unknown category";
+      const ratings = product.ratings || "No ratings";
+      const promotions = product.promotions ? product.promotions.join(", ") : "No promotions";
+  
       return {
         productName: product.title,
         productPrice: priceFloat,
         productLink: product.link,
         productImage: product.imageUrl,
         productSeller: product.source,
+        productStock: product.stockStatus,
+        productCategory: product.category,
+        productRatings: product.ratings,
+        productPromotions: product.promotions,
       };
     });
   } catch (error) {
-    console.error('Error fetching data from API', error);
-    throw new Error('Failed to fetch product data from API');
+    console.error("Error fetching data", error);
   }
 };
 
