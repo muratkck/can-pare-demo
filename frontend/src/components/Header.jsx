@@ -23,7 +23,7 @@ const Header = ({ handleSearch }) => {
   };
 
   const handleFavorites = () => {
-    navigate('/register');
+    navigate('/favorites');
   };
 
   useEffect(() => {
