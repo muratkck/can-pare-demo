@@ -8,9 +8,8 @@ router.post('/register', registerUser);
 // Login route
 router.post('/login', authUser);
 
-router.post('/favorites/add', protect, addFavoriteProduct);
-router.get('/favorites', protect, getFavorites);
+
 router.get('/getUsers', getUsers);
 router.get('/:email', getUser); // Route to get a user by email
-
+console.log(router.stack);
 module.exports = router;

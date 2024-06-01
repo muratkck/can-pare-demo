@@ -13,11 +13,13 @@ const ProductPage = () => {
 
   const addToFavorites = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/favorites/add', {
-        productId: productData.id  // Make sure productData has an 'id' field or adjust as needed
+      console.log(`Bearer ${localStorage.getItem('authToken')}`);
+      const response = await axios.post('http://localhost:5000/api/users/favorites/add', {
+        productId: productData.id
+        
       }, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}` // Assumes the token is stored in localStorage
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
       });
       if (response.status === 200) {

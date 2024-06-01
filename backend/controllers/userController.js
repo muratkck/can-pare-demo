@@ -99,6 +99,7 @@ const addFavoriteProduct = async (req, res) => {
 };
 
 const getFavorites = async (req, res) => {
+
   const userId = req.user._id;
 
   try {
