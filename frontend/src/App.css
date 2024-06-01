@@ -35,6 +35,14 @@ li {
   border: 2px solid #ededed;
   padding: 20px;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%; /* Ensure that the card takes up the full height of its container */
+}
+/* Add this CSS to your global styles or a separate CSS file */
+.card-link {
+  display: flex;
 }
 
 

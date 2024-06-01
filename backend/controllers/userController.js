@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
+
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: '1h',
@@ -73,5 +74,6 @@ const getUser = async (req, res) => {
     res.status(500).json({ message: 'Server error: ' + err.message });
   }
 };
+
 
 module.exports = { registerUser, authUser, getUser, getUsers };

@@ -16,7 +16,7 @@ function LoginPage() {
       const response = await axios.post('http://localhost:5000/api/users/login', { email, password });
       // Handle successful login
       localStorage.setItem('userEmail', email);
-      console.log(response.data);
+      //console.log(response.data);
       localStorage.setItem('authToken', response.data.token); // Store authentication token
       setIsLoggedIn(true); // Update state to reflect successful login
       navigate('/');

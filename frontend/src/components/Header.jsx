@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({ handleSearch }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
@@ -37,7 +37,17 @@ const Header = () => {
       setIsLoggedIn(false);
     }
   }, []);
-  console.log(user)
+  
+  const handleSearchInputChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch(searchQuery);  // Call the handleSearch function passed from HomePage
+    }
+  };
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed top-0 left-0 w-full z-20 shadow-lg">
@@ -53,7 +63,8 @@ const Header = () => {
                 type="text"
                 placeholder="Search products..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchInputChange}
+                onKeyDown={handleKeyDown}  // Add the keydown event listener
                 className="w-full p-2 border border-gray-300 rounded-md pl-10"
               />
               <div className="absolute inset-y-0 right-0 flex items-center mr-3">
@@ -93,7 +104,6 @@ const Header = () => {
                   <span className="block text-sm text-gray-500 truncate dark:text-gray-400">{user.email}</span>
                 </div>
                 <ul className="py-2" aria-labelledby="user-menu-button">
-
                   <li>
                     <button onClick={handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left">Sign out</button>
                   </li>

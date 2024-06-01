@@ -8,14 +8,12 @@ import ProductPage from './pages/ProductPage';
 
 const App = () => {
   return (
-    <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/product-page" element={<ProductPage />} />
       </Routes>
-    </Router>
   );
 };
 

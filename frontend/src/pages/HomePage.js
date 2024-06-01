@@ -2,18 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Card from '../components/Card';
-
+import axios from 'axios';
 
 function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if the token exists in local storage
     const token = localStorage.getItem('authToken');
-    //console.log(token)
     if (token) {
       setIsLoggedIn(true);
       navigate('/');
@@ -23,66 +22,27 @@ function HomePage() {
   }, []);
 
   if (!isLoggedIn) {
-    // Redirect to login page if not logged in
     return <Navigate to="/login" />;
   }
 
-   // Dummy product data
-   const products = [
-    { id: 1, name: 'Product 1', image: '/images.jpeg', category: 'Category 1' },
-    { id: 2, name: 'Product 2', image: '/images.jpeg', category: 'Category 2' },
-    { id: 3, name: 'Product 3', image: '/images.jpeg', category: 'Category 1' },
-    { id: 4, name: 'Product 4', image: '/images.jpeg', category: 'Category 3' },
-    { id: 5, name: 'Product 5', image: '/images.jpeg', category: 'Category 2' }
-  ];
-
-  // Get unique categories
-  const categories = [...new Set(products.map(product => product.category))];
-
-
-  const handleCategorySelection = (category) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter(cat => cat !== category));
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
+  const handleSearch = async (query) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/search/${query}`);
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Error fetching data", error);
     }
   };
 
-  const filteredProducts = products.filter(product =>
-    (selectedCategories.length === 0 || selectedCategories.includes(product.category)) &&
-    (product.name.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-
   return (
     <div>
-      <Header />
+      <Header handleSearch={handleSearch} />
 
-      <div className="container mx-auto mt-44 flex">
-        {/* Category section */}
-        <div className="w-1/5 bg-gray-200 h-page flex flex-col justify-between mr-5 rounded-xl">
-          <div>
-            <h2 className="text-2xl font-bold mb-4 text-center py-4">Categories</h2>
-            {categories.map(category => (
-              <div key={category} className="pl-4 mb-2 flex items-center">
-                <input
-                  type="checkbox"
-                  id={category}
-                  checked={selectedCategories.includes(category)}
-                  onChange={() => handleCategorySelection(category)}
-                  className="mr-2 checkbox-input visually-hidden"
-                />
-                <label htmlFor={category} className="cursor-pointer checkbox-label">{category}</label>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Product cards */}
-        <div className="w-full md:w-2/4">
-          <div className="grid gap-8">
-            {filteredProducts
-            .map(product => (
-              <div key={product.id}>
+      <div className="container mx-auto mt-44 flex items-center justify-center">
+        <div className="w-full md:w-2/3 shadow-lg">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {products.map((product, index) => (
+              <div key={index}>
                 <Card product={product} />
               </div>
             ))}
