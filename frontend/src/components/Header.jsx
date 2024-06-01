@@ -1,11 +1,12 @@
 import axios from 'axios';
 import React, { useEffect, useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const Header = ({ handleSearch }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownButtonRef = useRef(null);
@@ -49,6 +50,11 @@ const Header = ({ handleSearch }) => {
     }
   };
 
+  // Function to trigger search when the search icon is clicked
+  const handleSearchClick = () => {
+    handleSearch(searchQuery);
+  };
+
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed top-0 left-0 w-full z-20 shadow-lg">
       <div className="max-w-full flex items-center justify-between mx-auto p-4">
@@ -56,7 +62,7 @@ const Header = ({ handleSearch }) => {
           <img src="https://www.svgrepo.com/show/445600/cash-payment.svg" className="h-8" alt="can-pare Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">can-pare</span>
         </Link>
-        {isLoggedIn && (
+        {isLoggedIn && location.pathname !== '/product-page' && ( // Check if not on ProductPage
           <div className="flex items-center w-full justify-center">
             <div className="relative flex items-center justify-center w-1/3">
               <input
@@ -67,7 +73,7 @@ const Header = ({ handleSearch }) => {
                 onKeyDown={handleKeyDown}  // Add the keydown event listener
                 className="w-full p-2 border border-gray-300 rounded-md pl-10"
               />
-              <div className="absolute inset-y-0 right-0 flex items-center mr-3">
+              <div className="absolute inset-y-0 right-0 flex items-center mr-3 cursor-pointer" onClick={handleSearchClick}> {/* Added onClick event */}
                 <img src='/search.png' alt="Search" className="w-5 h-5" />
               </div>
             </div>

@@ -15,12 +15,12 @@ const ProductPage = () => {
       <div className="container mx-auto mt-44">
         <div className="bg-white p-8 rounded-lg shadow-md flex items-center">
           {/* Product Image */}
-          <div className="mr-4">
+          <div className="mr-4 flex-shrink-0">
             <img
               src={productData.productImage}
               alt={productData.productName}
-              className="h-450 w-100 rounded-lg"
-              style={{ maxHeight: '200px' }} // Adjust the maxHeight as needed
+              className="rounded-lg"
+              style={{ height: '300px', width: '300px', objectFit: 'cover' }} // Adjust the size as needed
             />
           </div>
           
@@ -29,15 +29,17 @@ const ProductPage = () => {
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold">{productData.productName}</h2>
             </div>
-            <div className="text-gray-600">
-              Category 1 {/* Replace with actual category */}
+            <div className="text-gray-600 mb-4">
+              Product Details {/* Replace with actual category */}
             </div>
             <div className="mb-4">
-              <p className="text-gray-700">Product Details</p>
+              <p className="text-gray-700">{productData.productDescription}</p>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-600">Price: {productData.productPrice}</span>
-              <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Add to Cart</button>
+              <span className="text-gray-600">Price: ${productData.productPrice}</span>
+              <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Add to Cart
+              </button>
             </div>
           </div>
         </div>

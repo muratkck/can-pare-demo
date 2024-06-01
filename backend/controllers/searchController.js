@@ -1,12 +1,11 @@
-const puppeteer = require('puppeteer');
+const axios = require('axios');
 
-
-const searchProducts =  async (req, res) => {
+const searchProducts = async (req, res) => {
   const { query } = req.params;
   console.log(query);
   try {
-    const googleShoppingProducts = await scrapeGoogleShopping(query);
-    googleShoppingProducts.sort((a, b) => parseFloat(a.productPrice.replace(/[^0-9.]/g, '')) - parseFloat(b.productPrice.replace(/[^0-9.]/g, '')));
+    const googleShoppingProducts = await fetchGoogleShoppingData(query);
+    googleShoppingProducts.sort((a, b) => a.productPrice - b.productPrice);
     res.json(googleShoppingProducts);
   } catch (error) {
     console.error(error);
@@ -14,30 +13,41 @@ const searchProducts =  async (req, res) => {
   }
 };
 
-const scrapeGoogleShopping = async (query) => {
-  const url = `https://www.google.com/search?tbm=shop&hl=tr&psb=1&ved=2ahUKEwj9xJv92riGAxV5MAYAHf5eDx4Qu-kFegQIABAK&q=${query}&oq=${query}&gs_lp=Egtwcm9kdWN0cy1jYyIHdGVsZWZvbkgAUABYAHAAeACQAQCYAQCgAQCqAQC4AQPIAQCYAgCgAgCYAwCSBwCgBwA&sclient=products-cc`;
-  console.log(url);
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto(url);
-
-  const products = await page.evaluate(() => {
-    const productElements = document.querySelectorAll('.sh-dgr__gr-auto ');
-    
-    return Array.from(productElements).slice(0, 8).map((product) => {
-
-        const productName = product.querySelector('.tAxDx').innerText;
-        const productPrice = product.querySelector('.a8Pemb').innerText;
-        const productLink = product.querySelector('a.Lq5OHe').href;
-        const productImage = product.querySelector('.ArOc1c img').getAttribute('src');
-        return {productName, productPrice, productLink, productImage};
-    });
-
+const fetchGoogleShoppingData = async (query) => {
+  let data = JSON.stringify({
+    "q": query,
+    "location": "United States",
+    "gl": "tr"
   });
-  //await browser.close();
-  //console.log(products);
-  return products;
-};
 
+  let config = {
+    method: 'post',
+    url: 'https://google.serper.dev/shopping',
+    headers: { 
+      'X-API-KEY': '015126cb440b330583010285766f934bba2a13a0', 
+      'Content-Type': 'application/json'
+    },
+    data: data
+  };
+
+  try {
+    const response = await axios(config);
+    const products = response.data.shopping.slice(0, 8); // Take only the first 8 products
+    return products.map(product => {
+      // Extract the numeric part of the price and convert it to a float
+      const priceFloat = parseFloat(product.price.replace(/[^0-9,.-]/g, '').replace(',', '.'));
+      return {
+        productName: product.title,
+        productPrice: priceFloat,
+        productLink: product.link,
+        productImage: product.imageUrl,
+        productSeller: product.source,
+      };
+    });
+  } catch (error) {
+    console.error('Error fetching data from API', error);
+    throw new Error('Failed to fetch product data from API');
+  }
+};
 
 module.exports = { searchProducts };
